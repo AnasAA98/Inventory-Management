@@ -33,6 +33,8 @@ export default function LoginPage() {
       justifyContent="center"
       alignItems="center"
       gap={2}
+      p={3}
+      bgcolor="#f5f5f5"
     >
       <Typography variant="h4">Login</Typography>
       <TextField
@@ -40,6 +42,7 @@ export default function LoginPage() {
         variant="outlined"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        sx={{ width: '300px' }}
       />
       <TextField
         label="Password"
@@ -47,11 +50,12 @@ export default function LoginPage() {
         variant="outlined"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        sx={{ width: '300px' }}
       />
-      <Button variant="contained" onClick={handleLogin}>
+      <Button variant="contained" onClick={handleLogin} sx={{ borderRadius: 2, boxShadow: 2 }}>
         Login
       </Button>
-      <Button variant="text" onClick={handleRegisterRedirect}>
+      <Button variant="text" onClick={handleRegisterRedirect} sx={{ borderRadius: 2, boxShadow: 2 }}>
         Don't have an account? Register here
       </Button>
     </Box>

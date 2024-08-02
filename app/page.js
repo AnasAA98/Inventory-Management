@@ -126,6 +126,7 @@ export default function Page() {
       justifyContent="center"
       alignItems="center"
       gap={2}
+      p={3}
     >
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -142,6 +143,7 @@ export default function Page() {
           gap={3}
           sx={{
             transform: 'translate(-50%, -50%)',
+            borderRadius: 2,
           }}
         >
           <Typography variant="h6"> Add Item</Typography>
@@ -155,7 +157,7 @@ export default function Page() {
               }}
             />
             <Button
-              variant="outlined"
+              variant="contained"
               onClick={() => {
                 addItem(itemName);
                 setItemName('');
@@ -172,10 +174,11 @@ export default function Page() {
         onClick={() => {
           handleOpen();
         }}
+        sx={{ borderRadius: 2, boxShadow: 2 }}
       >
         Add New Item
       </Button>
-      <Button variant="contained" onClick={logout}>
+      <Button variant="contained" onClick={logout} sx={{ borderRadius: 2, boxShadow: 2 }}>
         Logout
       </Button>
       <Box width="800px" display="flex" justifyContent="space-between" mb={2}>
@@ -184,20 +187,20 @@ export default function Page() {
           variant="outlined"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{ width: '60%' }}
+          sx={{ width: '60%', borderRadius: 2 }}
         />
         <Select
           value={sortCriteria}
           onChange={(e) => setSortCriteria(e.target.value)}
           displayEmpty
-          sx={{ width: '30%' }}
+          sx={{ width: '30%', borderRadius: 2 }}
         >
           <MenuItem value="name">Sort by Name</MenuItem>
           <MenuItem value="quantity">Sort by Quantity</MenuItem>
           <MenuItem value="dateAdded">Sort by Date Added</MenuItem>
         </Select>
       </Box>
-      <Box border="1px solid #333">
+      <Box border="1px solid #333" borderRadius={2} boxShadow={2}>
         <Box
           width="800px"
           height="100px"
@@ -205,12 +208,13 @@ export default function Page() {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          borderRadius="8px 8px 0 0"
         >
           <Typography variant="h2" color="#333">
             Inventory Items
           </Typography>
         </Box>
-        <Stack width="800px" height="300px" spacing={2} overflow="auto">
+        <Stack width="800px" height="300px" spacing={2} overflow="auto" padding={2}>
           {filteredInventory.map(({ id, quantity }) => (
             <Box
               key={id}
@@ -220,7 +224,9 @@ export default function Page() {
               alignItems="center"
               justifyContent="space-between"
               bgcolor="#f0f0f0"
-              padding={5}
+              padding={3}
+              borderRadius={2}
+              boxShadow={1}
             >
               <Typography variant="h3" color="#333" textAlign="center">
                 {id.charAt(0).toUpperCase() + id.slice(1)}
@@ -234,6 +240,7 @@ export default function Page() {
                   onClick={() => {
                     addItem(id);
                   }}
+                  sx={{ borderRadius: 2, boxShadow: 1 }}
                 >
                   Add
                 </Button>
@@ -242,6 +249,7 @@ export default function Page() {
                   onClick={() => {
                     removeItem(id);
                   }}
+                  sx={{ borderRadius: 2, boxShadow: 1 }}
                 >
                   Remove
                 </Button>
