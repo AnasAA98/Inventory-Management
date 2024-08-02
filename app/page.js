@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { collection, deleteDoc, getDocs, query, getDoc, setDoc, doc } from 'firebase/firestore';
-import { Box, Button, Modal, Stack, TextField, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, Modal, Stack, TextField, Typography, CircularProgress, MenuItem, Select } from '@mui/material';
 import { firestore } from '@/firebase';
 import { useAuth } from '@/app/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -12,8 +12,11 @@ export default function Page() {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
   const [inventory, setInventory] = useState([]);
+  const [filteredInventory, setFilteredInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortCriteria, setSortCriteria] = useState('name');
 
   useEffect(() => {
     if (user) {
@@ -21,20 +24,43 @@ export default function Page() {
     }
   }, [user]);
 
+  useEffect(() => {
+    filterAndSortInventory();
+  }, [searchQuery, sortCriteria, inventory]);
+
   const updateInventory = async () => {
     if (!user) return;
 
     const userInventoryRef = collection(firestore, 'users', user.uid, 'inventory');
-    const snapshot = query(userInventoryRef);
-    const docs = await getDocs(snapshot);
+    const snapshot = await getDocs(userInventoryRef);
     const inventoryList = [];
-    docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       inventoryList.push({
         id: doc.id,
         ...doc.data(),
       });
     });
     setInventory(inventoryList);
+    setFilteredInventory(inventoryList); // Set the initial filtered inventory
+  };
+
+  const filterAndSortInventory = () => {
+    let filtered = inventory.filter(item =>
+      item.id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    switch (sortCriteria) {
+      case 'quantity':
+        filtered.sort((a, b) => b.quantity - a.quantity); // Descending order
+        break;
+      case 'dateAdded':
+        filtered.sort((a, b) => a.dateAdded ? a.dateAdded.toMillis() - b.dateAdded.toMillis() : 0); // Assumes dateAdded is a Firestore timestamp
+        break;
+      default:
+        filtered.sort((a, b) => a.id.localeCompare(b.id));
+    }
+
+    setFilteredInventory(filtered);
   };
 
   const removeItem = async (itemId) => {
@@ -65,7 +91,7 @@ export default function Page() {
       const { quantity } = itemSnap.data();
       await setDoc(itemRef, { quantity: quantity + 1 }, { merge: true });
     } else {
-      await setDoc(itemRef, { quantity: 1 });
+      await setDoc(itemRef, { quantity: 1, dateAdded: new Date() }); // Add dateAdded field
     }
     await updateInventory();
   };
@@ -152,6 +178,25 @@ export default function Page() {
       <Button variant="contained" onClick={logout}>
         Logout
       </Button>
+      <Box width="800px" display="flex" justifyContent="space-between" mb={2}>
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          sx={{ width: '60%' }}
+        />
+        <Select
+          value={sortCriteria}
+          onChange={(e) => setSortCriteria(e.target.value)}
+          displayEmpty
+          sx={{ width: '30%' }}
+        >
+          <MenuItem value="name">Sort by Name</MenuItem>
+          <MenuItem value="quantity">Sort by Quantity</MenuItem>
+          <MenuItem value="dateAdded">Sort by Date Added</MenuItem>
+        </Select>
+      </Box>
       <Box border="1px solid #333">
         <Box
           width="800px"
@@ -166,7 +211,7 @@ export default function Page() {
           </Typography>
         </Box>
         <Stack width="800px" height="300px" spacing={2} overflow="auto">
-          {inventory.map(({ id, quantity }) => (
+          {filteredInventory.map(({ id, quantity }) => (
             <Box
               key={id}
               width="100%"
