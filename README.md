@@ -18,7 +18,7 @@ This Inventory Management App helps you track your inventory better by allowing 
 
 ## Hosted App
 
-You can access the hosted application at: [Inventory Management App](your-hosted-app-link)
+You can access the hosted application at: [Inventory Management App](https://inventory-management-teal-ten.vercel.app/)
 
 ## Key Code Snippets and Explanations
 
