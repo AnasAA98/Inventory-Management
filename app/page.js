@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { collection, deleteDoc, getDocs, getDoc, setDoc, doc } from 'firebase/firestore';
-import { Box, Button, Modal, Stack, TextField, Typography, CircularProgress, MenuItem, Select, IconButton } from '@mui/material';
+import { Box, Button, Modal, Stack, TextField, Typography, CircularProgress, MenuItem, Select, IconButton, Grid } from '@mui/material';
 import { firestore, storage } from '@/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { PhotoCamera } from '@mui/icons-material';
@@ -252,7 +252,6 @@ export default function Page() {
             <Box
               key={id}
               width="100%"
-              minHeight="100px"
               display="flex"
               alignItems="center"
               justifyContent="space-between"
@@ -261,32 +260,40 @@ export default function Page() {
               borderRadius={2}
               boxShadow={1}
             >
-              <Typography variant="h6" color="#333" textAlign="center">
-                {id.charAt(0).toUpperCase() + id.slice(1)}
-              </Typography>
-              <Typography variant="h6" color="#333" textAlign="center">
-                {quantity}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    addItem(id);
-                  }}
-                  sx={{ borderRadius: 2, boxShadow: 1 }}
-                >
-                  Add
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    removeItem(id);
-                  }}
-                  sx={{ borderRadius: 2, boxShadow: 1 }}
-                >
-                  Remove
-                </Button>
-              </Stack>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={4}>
+                  <Typography variant="h6" color="#333" textAlign="center">
+                    {id.charAt(0).toUpperCase() + id.slice(1)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <Typography variant="h6" color="#333" textAlign="center">
+                    {quantity}
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        addItem(id);
+                      }}
+                      sx={{ borderRadius: 2, boxShadow: 1 }}
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        removeItem(id);
+                      }}
+                      sx={{ borderRadius: 2, boxShadow: 1 }}
+                    >
+                      Remove
+                    </Button>
+                  </Stack>
+                </Grid>
+              </Grid>
             </Box>
           ))}
         </Stack>
